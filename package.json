@@ -1,0 +1,29 @@
+{
+  "name": "imagecompression",
+  "version": "1.0.0",
+  "description": "这是一个基于 Vue 3 + Element Plus 开发的在线图片压缩工具。",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "browser-image-compression": "^2.0.2",
+    "element-plus": "^2.9.0",
+    "pinia": "^2.1.4",
+    "vue": "^3.3.0",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "sass": "^1.64.1",
+    "vite": "^4.4.6"
+  },
+  "author": "",
+  "license": "ISC"
+}
