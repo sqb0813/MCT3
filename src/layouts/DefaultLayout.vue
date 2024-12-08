@@ -3,7 +3,7 @@
     <el-header class="layout-header">
       <div class="header-logo">
         <router-link to="/" class="logo-link">
-          <h1>工具箱</h1>
+          <h1>猫晨工具箱</h1>
         </router-link>
       </div>
     </el-header>

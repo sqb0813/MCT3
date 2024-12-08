@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
     <header class="home-header">
-      <h1 class="home-title">在线工具箱</h1>
+      <h1 class="home-title">猫晨工具箱</h1>
       <p class="home-subtitle">简单高效的在线工具集合</p>
     </header>
 

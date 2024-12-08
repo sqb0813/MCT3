@@ -12,6 +12,10 @@
           <el-icon><Picture /></el-icon>
           <span>图片压缩</span>
         </el-menu-item>
+        <el-menu-item index="batch-compress">
+          <el-icon><Files /></el-icon>
+          <span>批量压缩</span>
+        </el-menu-item>
         <el-menu-item index="convert">
           <el-icon><RefreshRight /></el-icon>
           <span>格式转换</span>
@@ -31,8 +35,9 @@
 
 <script setup>
 import { ref, computed, markRaw } from "vue";
-import { Picture, RefreshRight } from "@element-plus/icons-vue";
+import { Picture, RefreshRight, Files } from "@element-plus/icons-vue";
 import CompressComponent from "../views/image/Compress.vue";
+import BatchCompressComponent from "../views/image/BatchCompress.vue";
 // import ConvertComponent from "../views/image/Convert.vue";
 
 // 当前选中的功能
@@ -41,6 +46,7 @@ const activeFunction = ref("compress");
 // 组件映射表
 const componentMap = {
   compress: markRaw(CompressComponent),
+  "batch-compress": markRaw(BatchCompressComponent),
   // convert: markRaw(ConvertComponent),
 };
 
