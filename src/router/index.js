@@ -18,21 +18,22 @@ const router = createRouter({
           path: '/image',
           component: ModuleLayout,
           children: [
-            {
-              path: '',
-              redirect: '/image/compress'
-            },
+            // {
+            //   path: '',
+            //   redirect: '/image/compress'
+            // },
+            // 图片压缩
             {
               path: 'compress',
               name: 'imageCompress',
               component: () => import('../views/image/Compress.vue')
             },
-            // 其他图片工具路由
-            // {
-            //   path: 'convert',
-            //   name: 'imageConvert',
-            //   component: () => import('../views/image/Convert.vue')
-            // }
+            // 图片格式转换
+            {
+              path: 'convert',
+              name: 'imageConvert',
+              component: () => import('../views/image/Convert.vue')
+            }
           ]
         }
       ]

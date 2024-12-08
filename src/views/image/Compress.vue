@@ -6,76 +6,187 @@
     </header>
 
     <main class="main-content">
-      <!-- 上传区域 -->
-      <div class="upload-section" v-if="!originalImage">
-        <el-upload
-          class="upload-drop-zone"
-          drag
-          :auto-upload="false"
-          accept="image/png,image/jpeg,image/jpg"
-          :show-file-list="false"
-          @change="handleFileChange"
-        >
-          <el-icon class="upload-icon"><upload-filled /></el-icon>
-          <div class="upload-text">
-            <h3>将图片拖到此处，或点击上传</h3>
-            <p>支持 PNG、JPG 格式</p>
-          </div>
-        </el-upload>
-      </div>
-
-      <!-- 图片预览和压缩控制区域 -->
-      <div v-else class="preview-section">
-        <div class="image-comparison">
-          <!-- 原图预览 -->
-          <div class="image-card">
-            <h3>原始图片</h3>
-            <div class="image-wrapper">
-              <img :src="originalImageUrl" alt="原始图片" />
-            </div>
-            <div class="image-info">
-              <p>文件大小：{{ formatFileSize(originalSize) }}</p>
-              <p>
-                尺寸：{{ originalDimensions.width }} x
-                {{ originalDimensions.height }}
-              </p>
-            </div>
+      <!-- Tab 切换 -->
+      <el-tabs v-model="activeTab" class="compress-tabs">
+        <el-tab-pane label="单图压缩" name="single">
+          <!-- 单图压缩上传区域 -->
+          <div class="upload-section" v-if="!originalImage">
+            <el-upload
+              class="upload-drop-zone"
+              drag
+              :auto-upload="false"
+              accept="image/png,image/jpeg,image/jpg"
+              :show-file-list="false"
+              @change="handleFileChange"
+            >
+              <el-icon class="upload-icon"><upload-filled /></el-icon>
+              <div class="upload-text">
+                <h3>将图片拖到此处，或点击上传</h3>
+                <p>支持 PNG、JPG 格式</p>
+              </div>
+            </el-upload>
           </div>
 
-          <!-- 压缩后预览 -->
-          <div class="image-card" v-if="compressedImageUrl">
-            <h3>压缩后</h3>
-            <div class="image-wrapper">
-              <img :src="compressedImageUrl" alt="压缩后图片" />
+          <!-- 单图预览和压缩控制区域 -->
+          <div v-else class="preview-section">
+            <div class="image-comparison">
+              <!-- 原图预览 -->
+              <div class="image-card">
+                <h3>原始图片</h3>
+                <div class="image-wrapper">
+                  <img :src="originalImageUrl" alt="原始图片" />
+                </div>
+                <div class="image-info">
+                  <p>文件大小：{{ formatFileSize(originalSize) }}</p>
+                  <p>
+                    尺寸：{{ originalDimensions.width }} x
+                    {{ originalDimensions.height }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- 压缩后预览 -->
+              <div class="image-card" v-if="compressedImageUrl">
+                <h3>压缩后</h3>
+                <div class="image-wrapper">
+                  <img :src="compressedImageUrl" alt="压缩后图片" />
+                </div>
+                <div class="image-info">
+                  <p>文件大小：{{ formatFileSize(compressedSize) }}</p>
+                  <p>压缩率：{{ compressionRatio }}%</p>
+                </div>
+              </div>
             </div>
-            <div class="image-info">
-              <p>文件大小：{{ formatFileSize(compressedSize) }}</p>
-              <p>压缩率：{{ compressionRatio }}%</p>
+
+            <!-- 压缩控制 -->
+            <div class="compression-controls">
+              <el-form :model="compressionSettings" label-position="top">
+                <el-form-item label="压缩质量">
+                  <el-slider
+                    v-model="compressionSettings.quality"
+                    :min="1"
+                    :max="100"
+                    @change="handleCompress"
+                  />
+                </el-form-item>
+              </el-form>
+
+              <div class="action-buttons">
+                <el-button type="primary" @click="downloadCompressedImage">
+                  下载压缩图片
+                </el-button>
+                <el-button @click="resetImage">重新上传</el-button>
+              </div>
             </div>
           </div>
-        </div>
+        </el-tab-pane>
 
-        <!-- 压缩控制 -->
-        <div class="compression-controls">
-          <el-form :model="compressionSettings" label-position="top">
-            <el-form-item label="压缩质量">
-              <el-slider
-                v-model="compressionSettings.quality"
-                :min="1"
-                :max="100"
-                @change="handleCompress"
-              />
-            </el-form-item>
-          </el-form>
-
-          <div class="action-buttons">
-            <el-button type="primary" @click="downloadCompressedImage">
-              下载压缩图片
-            </el-button>
-            <el-button @click="resetImage">重新上传</el-button>
+        <el-tab-pane label="批量压缩" name="batch">
+          <!-- 批量压缩上传区域 -->
+          <div class="upload-section" v-if="!files.length">
+            <el-upload
+              class="upload-drop-zone"
+              drag
+              multiple
+              :auto-upload="false"
+              accept="image/png,image/jpeg,image/jpg"
+              :show-file-list="false"
+              @change="handleFilesChange"
+            >
+              <el-icon class="upload-icon"><upload-filled /></el-icon>
+              <div class="upload-text">
+                <h3>将多张图片拖到此处，或点击上传</h3>
+                <p>支持 PNG、JPG 格式</p>
+              </div>
+            </el-upload>
           </div>
-        </div>
-      </div>
+
+          <!-- 批量压缩文件列表和控制区域 -->
+          <div v-else class="compress-section">
+            <!-- 压缩设置 -->
+            <div class="compression-controls">
+              <el-form :model="compressionSettings" label-position="top">
+                <el-form-item label="压缩质量">
+                  <el-slider
+                    v-model="compressionSettings.quality"
+                    :min="1"
+                    :max="100"
+                  />
+                </el-form-item>
+              </el-form>
+
+              <div class="action-buttons">
+                <el-button
+                  type="primary"
+                  @click="compressAll"
+                  :loading="compressing"
+                >
+                  开始压缩
+                </el-button>
+                <el-button @click="resetFiles">重新选择</el-button>
+                <el-button
+                  type="success"
+                  @click="downloadAll"
+                  :disabled="!files.some((f) => f.compressedBlob)"
+                >
+                  下载全部
+                </el-button>
+              </div>
+            </div>
+
+            <!-- 文件列表 -->
+            <div class="files-list">
+              <el-table :data="files" style="width: 100%">
+                <el-table-column label="文件名" prop="name" />
+                <el-table-column label="原始大小" width="120">
+                  <template #default="{ row }">
+                    {{ formatFileSize(row.size) }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="压缩后大小" width="120">
+                  <template #default="{ row }">
+                    {{
+                      row.compressedSize
+                        ? formatFileSize(row.compressedSize)
+                        : "-"
+                    }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="压缩率" width="120">
+                  <template #default="{ row }">
+                    {{
+                      row.compressedSize
+                        ? Math.round(
+                            (1 - row.compressedSize / row.size) * 100
+                          ).toString() + "%"
+                        : "-"
+                    }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="状态" width="120">
+                  <template #default="{ row }">
+                    <el-tag :type="getStatusType(row.status)">
+                      {{ getStatusText(row.status) }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="120" align="center">
+                  <template #default="{ row }">
+                    <el-button
+                      link
+                      type="primary"
+                      @click="downloadSingle(row)"
+                      :disabled="!row.compressedBlob"
+                    >
+                      下载
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </main>
   </div>
 </template>
@@ -84,8 +195,14 @@
 import { ref, computed } from "vue";
 import { UploadFilled } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import { useCompressStore } from "@/stores/compress";
 
-// 状态变量
+const compressStore = useCompressStore();
+
+// Tab 切换状态
+const activeTab = ref("single");
+
+// 单图压缩状态变量
 const originalImage = ref(null);
 const originalImageUrl = ref("");
 const compressedImageUrl = ref("");
@@ -161,6 +278,36 @@ const handleCompress = async () => {
   img.src = originalImageUrl.value;
 };
 
+// 通用压缩图片函数
+const compressImage = (file) => {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error("压缩失败"));
+          }
+        },
+        file.type,
+        compressionSettings.value.quality / 100
+      );
+    };
+
+    img.onerror = () => reject(new Error("图片加载失败"));
+    img.src = URL.createObjectURL(file);
+  });
+};
+
 // 下载压缩后的图片
 const downloadCompressedImage = () => {
   if (!compressedImageUrl.value) return;
@@ -189,6 +336,111 @@ const formatFileSize = (bytes) => {
   const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
+};
+
+// 批量压缩状态变量
+const files = ref([]);
+const compressing = ref(false);
+
+// 处理批量文件上传
+const handleFilesChange = (file) => {
+  const fileObj = file.raw;
+  if (!fileObj) return;
+
+  // 验证文件类型
+  if (!["image/jpeg", "image/png"].includes(fileObj.type)) {
+    ElMessage.error("只支持 JPG 和 PNG 格式的图片");
+    return;
+  }
+
+  // 添加到文件列表
+  files.value.push({
+    id: Date.now() + Math.random(),
+    name: fileObj.name,
+    size: fileObj.size,
+    type: fileObj.type,
+    file: fileObj,
+    status: "pending", // pending, compressing, done, error
+    compressedBlob: null,
+    compressedSize: null,
+  });
+};
+
+// 压缩所有图片
+const compressAll = async () => {
+  if (compressing.value) return;
+  compressing.value = true;
+
+  try {
+    for (const file of files.value) {
+      if (file.status === "done") continue;
+
+      file.status = "compressing";
+      try {
+        const compressedBlob = await compressImage(file.file);
+        file.compressedBlob = compressedBlob;
+        file.compressedSize = compressedBlob.size;
+        file.status = "done";
+
+        // 添加到压缩历史
+        compressStore.addHistory({
+          name: file.name,
+          originalSize: file.size,
+          compressedSize: file.compressedSize,
+          quality: compressionSettings.value.quality,
+        });
+      } catch (err) {
+        file.status = "error";
+        ElMessage.error(`压缩失败: ${file.name}`);
+      }
+    }
+  } finally {
+    compressing.value = false;
+  }
+};
+
+// 下载单个文件
+const downloadSingle = (file) => {
+  if (!file.compressedBlob) return;
+
+  const link = document.createElement("a");
+  link.download = `compressed_${file.name}`;
+  link.href = URL.createObjectURL(file.compressedBlob);
+  link.click();
+};
+
+// 下载所有文件
+const downloadAll = () => {
+  files.value
+    .filter((file) => file.compressedBlob)
+    .forEach((file) => downloadSingle(file));
+};
+
+// 重置批量文件
+const resetFiles = () => {
+  files.value = [];
+};
+
+// 获取状态文本
+const getStatusText = (status) => {
+  const statusMap = {
+    pending: "待处理",
+    compressing: "压缩中",
+    done: "已完成",
+    error: "失败",
+  };
+  return statusMap[status];
+};
+
+// 获取状态类型
+const getStatusType = (status) => {
+  const typeMap = {
+    pending: "info",
+    compressing: "warning",
+    done: "success",
+    error: "danger",
+  };
+  return typeMap[status];
 };
 </script>
 
@@ -339,5 +591,44 @@ const formatFileSize = (bytes) => {
 :deep(.el-button--primary:hover) {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+}
+
+.compress-tabs {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-lg);
+}
+
+:deep(.el-tabs__header) {
+  margin-bottom: 2rem;
+}
+
+:deep(.el-tabs__nav-wrap::after) {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:deep(.el-tabs__item) {
+  font-size: 1.1rem;
+  padding: 0 2rem;
+}
+
+:deep(.el-tabs__item.is-active) {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.files-list {
+  margin-top: 2rem;
+}
+
+:deep(.el-table) {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+:deep(.el-tag) {
+  border-radius: 4px;
 }
 </style>
