@@ -33,6 +33,12 @@ const router = createRouter({
               path: 'convert',
               name: 'imageConvert',
               component: () => import('../views/image/Convert.vue')
+            },
+            // 图片加水印
+            {
+              path: 'watermark',
+              name: 'imageWatermark',
+              component: () => import('../views/image/Watermark.vue')
             }
           ]
         }

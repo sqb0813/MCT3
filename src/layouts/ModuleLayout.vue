@@ -16,6 +16,10 @@
           <el-icon><RefreshRight /></el-icon>
           <span>格式转换</span>
         </el-menu-item>
+        <el-menu-item index="watermark">
+          <el-icon><RefreshRight /></el-icon>
+          <span>图片加水印</span>
+        </el-menu-item>
       </el-menu>
     </div>
 
@@ -34,6 +38,7 @@ import { ref, computed, markRaw } from "vue";
 import { Picture, RefreshRight, Files } from "@element-plus/icons-vue";
 import CompressComponent from "../views/image/Compress.vue";
 import ConvertComponent from "../views/image/Convert.vue";
+import WatermarkComponent from "../views/image/Watermark.vue";
 
 // 当前选中的功能
 const activeFunction = ref("compress");
@@ -42,6 +47,7 @@ const activeFunction = ref("compress");
 const componentMap = {
   compress: markRaw(CompressComponent),
   convert: markRaw(ConvertComponent),
+  watermark: markRaw(WatermarkComponent),
 };
 
 // 当前显示的组件
