@@ -13,12 +13,16 @@
           <span>图片压缩</span>
         </el-menu-item>
         <el-menu-item index="convert">
-          <el-icon><RefreshRight /></el-icon>
+          <el-icon><Switch /></el-icon>
           <span>格式转换</span>
         </el-menu-item>
         <el-menu-item index="watermark">
-          <el-icon><RefreshRight /></el-icon>
+          <el-icon><Stamp /></el-icon>
           <span>图片加水印</span>
+        </el-menu-item>
+        <el-menu-item index="blur">
+          <el-icon><MagicStick /></el-icon>
+          <span>图片模糊化</span>
         </el-menu-item>
       </el-menu>
     </div>
@@ -35,10 +39,11 @@
 
 <script setup>
 import { ref, computed, markRaw } from "vue";
-import { Picture, RefreshRight, Files } from "@element-plus/icons-vue";
+import { Picture, Switch, Stamp, MagicStick } from "@element-plus/icons-vue";
 import CompressComponent from "../views/image/Compress.vue";
 import ConvertComponent from "../views/image/Convert.vue";
 import WatermarkComponent from "../views/image/Watermark.vue";
+import BlurComponent from "../views/image/ImageBlur.vue";
 
 // 当前选中的功能
 const activeFunction = ref("compress");
@@ -48,6 +53,7 @@ const componentMap = {
   compress: markRaw(CompressComponent),
   convert: markRaw(ConvertComponent),
   watermark: markRaw(WatermarkComponent),
+  blur: markRaw(BlurComponent),
 };
 
 // 当前显示的组件

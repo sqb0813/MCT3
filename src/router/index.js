@@ -39,6 +39,12 @@ const router = createRouter({
               path: 'watermark',
               name: 'imageWatermark',
               component: () => import('../views/image/Watermark.vue')
+            },
+            // 图片模糊化
+            {
+              path: 'blur',
+              name: 'imageBlur',
+              component: () => import('../views/image/ImageBlur.vue')
             }
           ]
         }
