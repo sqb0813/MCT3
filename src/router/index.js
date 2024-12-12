@@ -45,6 +45,12 @@ const router = createRouter({
               path: 'blur',
               name: 'imageBlur',
               component: () => import('../views/image/ImageBlur.vue')
+            },
+            // 图片灰度化
+            {
+              path: 'grayScale',
+              name: 'imageGrayScale',
+              component: () => import('../views/image/ImageToGrayScale.vue')
             }
           ]
         }

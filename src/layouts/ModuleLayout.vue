@@ -13,7 +13,7 @@
           <span>图片压缩</span>
         </el-menu-item>
         <el-menu-item index="convert">
-          <el-icon><Switch /></el-icon>
+          <el-icon><PictureRounded /></el-icon>
           <span>格式转换</span>
         </el-menu-item>
         <el-menu-item index="watermark">
@@ -23,6 +23,10 @@
         <el-menu-item index="blur">
           <el-icon><MagicStick /></el-icon>
           <span>图片模糊化</span>
+        </el-menu-item>
+        <el-menu-item index="grayScale">
+          <el-icon><Brush /></el-icon>
+          <span>图片转灰度</span>
         </el-menu-item>
       </el-menu>
     </div>
@@ -39,12 +43,12 @@
 
 <script setup>
 import { ref, computed, markRaw } from "vue";
-import { Picture, Switch, Stamp, MagicStick } from "@element-plus/icons-vue";
+import { Picture, PictureRounded, Stamp, MagicStick, Brush } from "@element-plus/icons-vue";
 import CompressComponent from "../views/image/Compress.vue";
 import ConvertComponent from "../views/image/Convert.vue";
 import WatermarkComponent from "../views/image/Watermark.vue";
-import BlurComponent from "../views/image/ImageBlur.vue";
-
+import ImageBlurComponent from "../views/image/ImageBlur.vue";
+import ImageGrayScaleComponent from "../views/image/ImageToGrayScale.vue";
 // 当前选中的功能
 const activeFunction = ref("compress");
 
@@ -53,7 +57,8 @@ const componentMap = {
   compress: markRaw(CompressComponent),
   convert: markRaw(ConvertComponent),
   watermark: markRaw(WatermarkComponent),
-  blur: markRaw(BlurComponent),
+  blur: markRaw(ImageBlurComponent),
+  grayScale: markRaw(ImageGrayScaleComponent),
 };
 
 // 当前显示的组件
