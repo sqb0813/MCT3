@@ -14,14 +14,21 @@
 <script setup>
 import { ref } from "vue";
 import ModuleCard from "./ModuleCard.vue";
-import { Picture, Document, VideoPlay } from "@element-plus/icons-vue";
+import { Picture, Cellphone } from "@element-plus/icons-vue";
 
 const modules = ref([
   {
     path: "/image",
-    icon: "Picture",
+    icon: Picture,
     title: "图片工具",
     description: "图片压缩、格式转换、水印添加等",
+  },
+  // AI恋爱/婚姻契合度预测
+  {
+    path: "/ai-love",
+    icon: Cellphone,
+    title: "AI恋爱/婚姻契合度预测",
+    description: "AI恋爱/婚姻契合度预测",
   },
   // 后续可以添加更多模块
   // {

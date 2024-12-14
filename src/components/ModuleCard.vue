@@ -58,7 +58,12 @@ defineProps({
 }
 
 .card-icon :deep(svg) {
-  font-size: 32px;
+  font-size: 45px;
+  color: #34c759;
+}
+
+.el-icon :deep(svg) {
+  font-size: 45px;
   color: #34c759;
 }
 

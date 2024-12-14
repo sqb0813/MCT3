@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
-import ModuleLayout from '../layouts/ModuleLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,41 +15,93 @@ const router = createRouter({
         },
         {
           path: '/image',
-          component: ModuleLayout,
+          component: () => import('../layouts/ModuleLayout.vue'),
           children: [
-            // {
-            //   path: '',
-            //   redirect: '/image/compress'
-            // },
-            // 图片压缩
             {
               path: 'compress',
               name: 'imageCompress',
               component: () => import('../views/image/Compress.vue')
             },
-            // 图片格式转换
             {
               path: 'convert',
               name: 'imageConvert',
               component: () => import('../views/image/Convert.vue')
             },
-            // 图片加水印
             {
               path: 'watermark',
               name: 'imageWatermark',
               component: () => import('../views/image/Watermark.vue')
             },
-            // 图片模糊化
             {
               path: 'blur',
               name: 'imageBlur',
               component: () => import('../views/image/ImageBlur.vue')
             },
-            // 图片灰度化
             {
               path: 'grayScale',
               name: 'imageGrayScale',
               component: () => import('../views/image/ImageToGrayScale.vue')
+            }
+          ]
+        },
+        {
+          path: '/love',
+          children: [
+            {
+              path: '',
+              name: 'love',
+              component: () => import('../views/love/LoveHome.vue')
+            },
+            {
+              path: 'test',
+              name: 'loveTest',
+              component: () => import('../views/love/LoveTest.vue')
+            },
+            {
+              path: 'expert/:id',
+              name: 'expertDetail',
+              component: () => import('../views/love/ExpertDetail.vue')
+            },
+            {
+              path: 'analysis',
+              name: 'analysis',
+              component: () => import('../views/love/Analysis.vue')
+            },
+            {
+              path: 'advice',
+              name: 'advice',
+              component: () => import('../views/love/Advice.vue')
+            }
+          ]
+        },
+        {
+          path: '/ai-love',
+          component: () => import('../layouts/AiLoveLayout.vue'),
+          children: [
+            {
+              path: '',
+              name: 'aiLove',
+              component: () => import('../views/ai-love/index.vue')
+            },
+            {
+              path: 'test',
+              name: 'aiLoveTest', 
+              component: () => import('../views/ai-love/test.vue')
+            },
+            {
+              path: 'result',
+              name: 'aiLoveResult',
+              component: () => import('../views/ai-love/result.vue')
+            },
+            {
+              path: 'community',
+              name: 'aiLoveCommunity',
+              component: () => import('../views/ai-love/community.vue')
+            },
+            {
+              path: 'history',
+              name: 'aiLoveHistory',
+              component: () => import('../views/ai-love/history.vue')
             }
           ]
         }
