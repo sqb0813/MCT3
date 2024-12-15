@@ -2,7 +2,13 @@
   <div class="module-layout">
     <!-- 左侧导航 -->
     <div class="module-sidebar">
-      <h2 class="sidebar-title">图片工具</h2>
+      <div class="sidebar-header">
+        <el-button class="back-button" text @click="router.back()">
+          <el-icon><ArrowLeft /></el-icon>
+          返回
+        </el-button>
+        <h2 class="sidebar-title">图片工具</h2>
+      </div>
       <el-menu
         :default-active="activeFunction"
         class="module-menu"
@@ -28,6 +34,10 @@
           <el-icon><Brush /></el-icon>
           <span>图片转灰度</span>
         </el-menu-item>
+        <el-menu-item index="blackOrWhite">
+          <el-icon><Camera /></el-icon>
+          <span>图片转黑白</span>
+        </el-menu-item>
       </el-menu>
     </div>
 
@@ -43,12 +53,22 @@
 
 <script setup>
 import { ref, computed, markRaw } from "vue";
-import { Picture, PictureRounded, Stamp, MagicStick, Brush } from "@element-plus/icons-vue";
+import { useRouter } from "vue-router";
+import {
+  Picture,
+  PictureRounded,
+  Stamp,
+  MagicStick,
+  Brush,
+  ArrowLeft,
+  Camera,
+} from "@element-plus/icons-vue";
 import CompressComponent from "../views/image/Compress.vue";
 import ConvertComponent from "../views/image/Convert.vue";
 import WatermarkComponent from "../views/image/Watermark.vue";
 import ImageBlurComponent from "../views/image/ImageBlur.vue";
 import ImageGrayScaleComponent from "../views/image/ImageToGrayScale.vue";
+import ImageBlackOrWhiteComponent from "../views/image/BlackOrWhite.vue";
 // 当前选中的功能
 const activeFunction = ref("compress");
 
@@ -59,6 +79,7 @@ const componentMap = {
   watermark: markRaw(WatermarkComponent),
   blur: markRaw(ImageBlurComponent),
   grayScale: markRaw(ImageGrayScaleComponent),
+  blackOrWhite: markRaw(ImageBlackOrWhiteComponent),
 };
 
 // 当前显示的组件
@@ -68,6 +89,8 @@ const currentComponent = computed(() => componentMap[activeFunction.value]);
 const handleSelect = (index) => {
   activeFunction.value = index;
 };
+
+const router = useRouter();
 </script>
 
 <style scoped>
@@ -84,11 +107,26 @@ const handleSelect = (index) => {
   padding: 2rem 0;
 }
 
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  margin-right: 10px;
+  font-size: 14px;
+}
+
+.back-button :deep(.el-icon) {
+  margin-right: 4px;
+}
+
 .sidebar-title {
-  padding: 0 1.5rem;
-  margin-bottom: 1.5rem;
-  font-size: 1.25rem;
-  color: #333333;
+  margin: 0;
+  font-size: 18px;
+  color: var(--primary-color);
 }
 
 .module-menu {

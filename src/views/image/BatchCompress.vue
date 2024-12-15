@@ -346,9 +346,4 @@ const getStatusType = (status) => {
 .files-list {
   margin-top: 2rem;
 }
-
-:deep(.el-button--primary) {
-  background: var(--primary-gradient);
-  border: none;
-}
 </style>

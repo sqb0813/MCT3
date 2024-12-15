@@ -97,7 +97,7 @@
       <div class="step-buttons">
         <el-button v-if="currentStep > 0" @click="prevStep">上一步</el-button>
         <el-button v-if="currentStep < 3" type="primary" @click="nextStep"
-          >��一步</el-button
+          >下一步</el-button
         >
         <el-button
           v-else
@@ -114,6 +114,8 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
+import { testApi } from "@/api";
+import { ElMessage } from "element-plus";
 
 const router = useRouter();
 const currentStep = ref(0);
@@ -209,11 +211,11 @@ const prevStep = () => {
 const submitTest = async () => {
   try {
     submitting.value = true;
-    // TODO: 调用API提交测试数据
-    await new Promise((resolve) => setTimeout(resolve, 1500)); // 模拟API调用
-    router.push("/love/analysis");
+    const response = await testApi.submitTest(formData);
+    router.push(`/love/analysis?id=${response.data.id}`);
   } catch (error) {
     console.error("提交失败:", error);
+    ElMessage.error("提交测试失败");
   } finally {
     submitting.value = false;
   }

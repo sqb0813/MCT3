@@ -262,3 +262,228 @@
 - [ ] 实现响应式布局
 - [ ] 添加页面动效
 - [ ] 优化加载性能
+
+## 待开发功能详细设计
+
+### 1. 用户注册登录
+
+#### 功能模块
+
+- 手机号/邮箱注册
+- 账号密码登录
+- 验证码功能
+- 第三方登录(微信/QQ)
+- 找回密码
+- 用户信息管理
+- 登录状态维护
+
+#### 技术实现
+
+- JWT token 认证
+- 密码加密(bcrypt)
+- Redis 存储验证码
+- 阿里云短信服务
+- 七牛云存储头像
+
+#### 数据库设计
+
+- users 表扩展:
+  - avatar: 头像 URL
+  - phone: 手机号
+  - email: 邮箱
+  - password_hash: 密码哈希
+  - last_login: 最后登录时间
+  - status: 账号状态
+  - created_at: 注册时间
+
+#### API 设计
+
+- POST /api/auth/register - 用户注册
+- POST /api/auth/login - 用户登录
+- POST /api/auth/verify-code - 获取验证码
+- PUT /api/user/profile - 更新用户信息
+- GET /api/user/info - 获取用户信息
+
+#### 页面设计
+
+- 登录页面
+  - 账号密码登录表单
+  - 验证码输入框
+  - 第三方登录按钮
+  - 找回密码入口
+- 注册页面
+  - 手机号/邮箱注册表单
+  - 验证码获取按钮
+  - 用户协议勾选
+- 个人中心页
+  - 基本信息展示
+  - 头像上传
+  - 资料编辑
+
+### 2. 历史记录追踪
+
+#### 功能模块
+
+- 测试记录列表
+- 匹配度趋势图
+- 详细报告查看
+- PDF 报告导出
+- 记录管理(删除/归档)
+
+#### 技术实现
+
+- ECharts 图表展示
+- PDF 生成(jsPDF)
+- 文件下载处理
+- 数据过滤排序
+
+#### 数据库设计
+
+- test_records 表扩展:
+  - user_id: 用户 ID
+  - test_type: 测试类型
+  - score: 匹配分数
+  - report_data: 报告数据(JSON)
+  - status: 记录状态
+  - created_at: 测试时间
+
+#### API 设计
+
+- GET /api/records - 获取测试记录列表
+- GET /api/records/:id - 获取单条记录详情
+- POST /api/records/export - 导出 PDF 报告
+- DELETE /api/records/:id - 删除记录
+
+#### 页面设计
+
+- 历史记录页
+  - 记录列表展示
+  - 筛选排序功能
+  - 趋势图表展示
+  - 导出/删除按钮
+- 记录详情页
+  - 测试报告展示
+  - 匹配分析图表
+  - PDF 导出选项
+
+### 3. 社区互动功能
+
+#### 功能模块
+
+- 话题发布/管理
+- 评论回复系统
+- 点赞收藏功能
+- 用户关注
+- 消息通知
+- 内容审核
+
+#### 技术实现
+
+- WebSocket 即时通讯
+- 消息队列(Redis)
+- 内容过滤系统
+- 图片上传处理
+
+#### 数据库设计
+
+- posts 表:
+  - user_id: 发布者 ID
+  - title: 标题
+  - content: 内容
+  - images: 图片 URLs
+  - likes: 点赞数
+  - comments: 评论数
+  - status: 状态
+- comments 表:
+  - post_id: 帖子 ID
+  - user_id: 评论者 ID
+  - content: 评论内容
+  - parent_id: 父评论 ID
+- notifications 表:
+  - user_id: 接收者 ID
+  - type: 通知类型
+  - content: 通知内容
+  - status: 读取状态
+
+#### API 设计
+
+- POST /api/posts - 发布帖子
+- GET /api/posts - 获取帖子列表
+- POST /api/posts/:id/comment - 发表评论
+- POST /api/posts/:id/like - 点赞
+- GET /api/notifications - 获取通知
+
+#### 页面设计
+
+- 社区首页
+  - 帖子列表
+  - 发帖按钮
+  - 话题分类
+  - 热门排行
+- 帖子详情页
+  - 内容展示
+  - 评论区
+  - 点赞按钮
+- 消息中心
+  - 通知列表
+  - 消息状态
+  - 快速回复
+
+### 4. 专家系统对接
+
+#### 功能模块
+
+- 专家认证
+- 在线咨询
+- 建议反馈
+- 评分系统
+- 预约管理
+- 收费系统
+
+#### 技术实现
+
+- 视频通话(WebRTC)
+- 支付系统集成
+- 预约排期系统
+- 专家推荐算法
+
+#### 数据库设计
+
+- experts 表:
+  - user_id: 用户 ID
+  - title: 职称
+  - introduction: 简介
+  - specialties: 专长领域
+  - price: 咨询价格
+  - rating: 评分
+- consultations 表:
+  - expert_id: 专家 ID
+  - user_id: 用户 ID
+  - type: 咨询类型
+  - status: 状态
+  - schedule_time: 预约时间
+  - duration: 时长
+  - price: 费用
+
+#### API 设计
+
+- POST /api/experts/verify - 专家认证
+- GET /api/experts - 获取专家列表
+- POST /api/consultations - 创建咨询
+- GET /api/consultations - 获取咨询记录
+- POST /api/payments - 支付咨询费用
+
+#### 页面设计
+
+- 专家列表页
+  - 专家卡片展示
+  - 筛选搜索
+  - 评分排序
+- 专家详情页
+  - 个人介绍
+  - 预约日历
+  - 评价列表
+- 咨询管理页
+  - 预约记录
+  - 咨询历史
+  - 支付记录
