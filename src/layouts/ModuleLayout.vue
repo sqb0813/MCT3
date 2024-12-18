@@ -38,6 +38,14 @@
           <el-icon><Camera /></el-icon>
           <span>图片转黑白</span>
         </el-menu-item>
+        <el-menu-item index="textCard">
+          <el-icon><Postcard /></el-icon>
+          <span>文字卡片化</span>
+        </el-menu-item>
+        <el-menu-item index="randomColor">
+          <el-icon><ScaleToOriginal /></el-icon>
+          <span>图片随机色</span>
+        </el-menu-item>
       </el-menu>
     </div>
 
@@ -62,6 +70,8 @@ import {
   Brush,
   ArrowLeft,
   Camera,
+  Postcard,
+  ScaleToOriginal,
 } from "@element-plus/icons-vue";
 import CompressComponent from "../views/image/Compress.vue";
 import ConvertComponent from "../views/image/Convert.vue";
@@ -69,6 +79,8 @@ import WatermarkComponent from "../views/image/Watermark.vue";
 import ImageBlurComponent from "../views/image/ImageBlur.vue";
 import ImageGrayScaleComponent from "../views/image/ImageToGrayScale.vue";
 import ImageBlackOrWhiteComponent from "../views/image/BlackOrWhite.vue";
+import TextCardComponent from "../views/image/TextCard.vue";
+import RandomColorComponent from "../views/image/RandomColor.vue";
 // 当前选中的功能
 const activeFunction = ref("compress");
 
@@ -80,6 +92,8 @@ const componentMap = {
   blur: markRaw(ImageBlurComponent),
   grayScale: markRaw(ImageGrayScaleComponent),
   blackOrWhite: markRaw(ImageBlackOrWhiteComponent),
+  textCard: markRaw(TextCardComponent),
+  randomColor: markRaw(RandomColorComponent),
 };
 
 // 当前显示的组件

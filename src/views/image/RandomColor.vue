@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <header class="app-header">
-      <h1>图片转灰度</h1>
-      <p class="subtitle">专业的图片灰度处理工具，支持多种算法</p>
+      <h1>图片随机色</h1>
+      <p class="subtitle">专业的图片随机色处理工具，支持多种算法</p>
     </header>
 
     <main class="main-content">
@@ -34,21 +34,18 @@
               <div class="image-preview original">
                 <h3>原图</h3>
                 <div class="image-container">
-                  <img
-                    :src="singleImage.originalPreview"
-                    :alt="singleImage.file.name"
-                  />
+                  <img :src="singleImage.originalPreview" :alt="singleImage.file.name" />
                 </div>
               </div>
 
-              <!-- 灰度图预览 -->
+              <!-- 随机色效果预览 -->
               <div class="image-preview processed">
-                <h3>灰度效果</h3>
+                <h3>随机色效果</h3>
                 <div class="image-container">
-                  <img
-                    v-if="singleImage.processedPreview"
-                    :src="singleImage.processedPreview"
-                    :alt="singleImage.file.name + '(灰度)'"
+                  <img 
+                    v-if="singleImage.processedPreview" 
+                    :src="singleImage.processedPreview" 
+                    :alt="singleImage.file.name + '(随机色)'" 
                   />
                   <div v-else class="placeholder">
                     <el-icon><picture-rounded /></el-icon>
@@ -84,31 +81,24 @@
             <!-- 图片列表 -->
             <div class="images-list">
               <el-scrollbar height="600px">
-                <div
-                  v-for="(image, index) in images"
-                  :key="index"
-                  class="image-item"
-                >
+                <div v-for="(image, index) in images" :key="index" class="image-item">
                   <div class="image-comparison">
                     <!-- 原图预览 -->
                     <div class="image-preview original">
                       <h3>原图</h3>
                       <div class="image-container">
-                        <img
-                          :src="image.originalPreview"
-                          :alt="image.file.name"
-                        />
+                        <img :src="image.originalPreview" :alt="image.file.name" />
                       </div>
                     </div>
 
-                    <!-- 灰度图预览 -->
+                    <!-- 随机色效果预览 -->
                     <div class="image-preview processed">
-                      <h3>灰度效果</h3>
+                      <h3>随机色效果</h3>
                       <div class="image-container">
-                        <img
-                          v-if="image.processedPreview"
-                          :src="image.processedPreview"
-                          :alt="image.file.name + '(灰度)'"
+                        <img 
+                          v-if="image.processedPreview" 
+                          :src="image.processedPreview" 
+                          :alt="image.file.name + '(随机色)'" 
                         />
                         <div v-else class="placeholder">
                           <el-icon><picture-rounded /></el-icon>
@@ -117,19 +107,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- 单张图片的转换按钮 -->
-                  <!-- <div class="image-actions">
-                    <el-button 
-                      type="primary"
-                      @click="processSingleImageInBatch(image)"
-                      :loading="image.processing"
-                      :disabled="!!image.processedPreview"
-                    >
-                      {{ image.processing ? '转换中...' : '开始转换' }}
-                      转换此图
-                    </el-button>
-                  </div> -->
                 </div>
               </el-scrollbar>
             </div>
@@ -140,8 +117,8 @@
       <!-- 控制面板 -->
       <div class="control-panel">
         <el-form :model="settings" label-position="top">
-          <!-- 算法选择 -->
-          <el-form-item label="灰度算法">
+          <!-- 随机色算法选择 -->
+          <el-form-item label="随机色算法">
             <el-select v-model="settings.algorithm" class="algorithm-select">
               <el-option
                 v-for="algo in algorithms"
@@ -152,23 +129,36 @@
             </el-select>
           </el-form-item>
 
-          <!-- 亮度调节 -->
-          <el-form-item label="亮度调节">
+          <!-- 色相范围 -->
+          <el-form-item label="色相范围">
             <el-slider
-              v-model="settings.brightness"
-              :min="-100"
-              :max="100"
-              :format-tooltip="(val) => `${val > 0 ? '+' : ''}${val}%`"
+              v-model="settings.hueRange"
+              range
+              :min="0"
+              :max="360"
+              :format-tooltip="(val) => `${val}°`"
             />
           </el-form-item>
 
-          <!-- 对比度调节 -->
-          <el-form-item label="对比度">
+          <!-- 饱和度范围 -->
+          <el-form-item label="饱和度范围">
             <el-slider
-              v-model="settings.contrast"
-              :min="-100"
+              v-model="settings.saturationRange"
+              range
+              :min="0"
               :max="100"
-              :format-tooltip="(val) => `${val > 0 ? '+' : ''}${val}%`"
+              :format-tooltip="(val) => `${val}%`"
+            />
+          </el-form-item>
+
+          <!-- 亮度范围 -->
+          <el-form-item label="亮度范围">
+            <el-slider
+              v-model="settings.lightnessRange"
+              range
+              :min="0"
+              :max="100"
+              :format-tooltip="(val) => `${val}%`"
             />
           </el-form-item>
         </el-form>
@@ -176,13 +166,13 @@
         <!-- 操作按钮 -->
         <div class="action-buttons">
           <template v-if="activeTab === 'single'">
-            <el-button
+            <el-button 
               type="primary"
               @click="processSingleImage"
               :loading="processing"
               :disabled="!singleImage"
             >
-              {{ processing ? "转换中..." : "开始转换" }}
+              {{ processing ? '处理中...' : '开始处理' }}
             </el-button>
             <el-button @click="resetSingleImage">重新选择</el-button>
             <el-button
@@ -200,7 +190,7 @@
               :loading="batchProcessing"
               :disabled="!hasUnprocessedImages"
             >
-              {{ batchProcessing ? "批量转换中..." : "批量转换" }}
+              {{ batchProcessing ? '批量处理中...' : '批量处理' }}
             </el-button>
             <el-button @click="resetImages">重新选择</el-button>
             <el-button
@@ -218,302 +208,249 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch, computed } from "vue";
-import { ElMessage } from "element-plus";
-import { UploadFilled, PictureRounded } from "@element-plus/icons-vue";
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+import { ElMessage } from 'element-plus'
+import { UploadFilled, PictureRounded } from '@element-plus/icons-vue'
 
 // Web Worker 实例
-let worker = null;
+let worker = null
 
 // 状态变量
-const images = ref([]);
-const processing = ref(false);
+const activeTab = ref('single')
+const singleImage = ref(null)
+const images = ref([])
+const processing = ref(false)
+const batchProcessing = ref(false)
 
-// 灰度算法选项
+// 随机色算法选项
 const algorithms = [
-  { label: "加权平均法（推荐）", value: "weighted" },
-  { label: "平均值法", value: "average" },
-  { label: "亮度法", value: "luminosity" },
-];
+  { label: '全局随机', value: 'global' },
+  { label: '区域随机', value: 'regional' },
+  { label: '渐变随机', value: 'gradient' }
+]
 
 // 处理设置
 const settings = ref({
-  algorithm: "weighted",
-  brightness: 0,
-  contrast: 0,
-});
+  algorithm: 'global',
+  hueRange: [0, 360],
+  saturationRange: [50, 100],
+  lightnessRange: [30, 70]
+})
 
-// 计算属性：是否有已处理的图片
+// 计算属性
 const hasProcessedImages = computed(() => {
-  return images.value.some((img) => img.processedPreview);
-});
+  return images.value.some(img => img.processedPreview)
+})
 
-// 新增状态变量
-const activeTab = ref("single");
-const singleImage = ref(null);
-
-// 添加批量处理状态
-const batchProcessing = ref(false);
-
-// 计算是否有未处理的图片
 const hasUnprocessedImages = computed(() => {
-  return images.value.some((img) => !img.processedPreview);
-});
+  return images.value.some(img => !img.processedPreview)
+})
 
 // 初始化 Web Worker
 onMounted(() => {
-  worker = new Worker(
-    new URL("@/workers/grayscale.worker.js", import.meta.url)
-  );
-
+  worker = new Worker(new URL('@/workers/randomcolor.worker.js', import.meta.url))
+  
   worker.onmessage = (e) => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = e.data.width;
-    canvas.height = e.data.height;
-    ctx.putImageData(e.data, 0, 0);
-
-    processedPreview.value = canvas.toDataURL("image/png");
-    processing.value = false;
-
-    ElMessage.success("转换完成");
-  };
-
+    const { imageData, id } = e.data
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    
+    canvas.width = imageData.width
+    canvas.height = imageData.height
+    
+    // 从接收到的 buffer 重建 ImageData
+    const newImageData = new ImageData(
+      new Uint8ClampedArray(imageData.data),
+      imageData.width,
+      imageData.height
+    )
+    
+    ctx.putImageData(newImageData, 0, 0)
+    
+    if (id === 'single') {
+      singleImage.value.processedPreview = canvas.toDataURL('image/png')
+      processing.value = false
+      ElMessage.success('处理完成')
+    } else {
+      const image = images.value.find(img => img.id === id)
+      if (image) {
+        image.processedPreview = canvas.toDataURL('image/png')
+      }
+    }
+  }
+  
   worker.onerror = (error) => {
-    processing.value = false;
-    ElMessage.error("处理失败：" + error.message);
-    console.error(error);
-  };
-});
+    processing.value = false
+    ElMessage.error('处理失败：' + error.message)
+    console.error(error)
+  }
+})
 
 // 清理 Worker
 onUnmounted(() => {
-  resetSingleImage();
-  resetImages();
   if (worker) {
-    worker.terminate();
+    worker.terminate()
   }
-});
+  resetSingleImage()
+  resetImages()
+})
 
 // 处理单张文件上传
 const handleSingleFileChange = (file) => {
-  const fileObj = file.raw;
-  if (!fileObj || !fileObj.type.startsWith("image/")) {
-    ElMessage.error("请上传图片文件");
-    return;
+  const fileObj = file.raw
+  if (!fileObj || !fileObj.type.startsWith('image/')) {
+    ElMessage.error('请上传图片文件')
+    return
   }
-
+  
   singleImage.value = {
+    id: 'single',
     file: fileObj,
     originalPreview: URL.createObjectURL(fileObj),
-    processedPreview: "",
-  };
-};
+    processedPreview: ''
+  }
+}
 
 // 处理批量文件上传
 const handleBatchFileChange = (file) => {
-  const files = Array.isArray(file) ? file : [file];
-
-  files.forEach((f) => {
-    const fileObj = f.raw;
-    if (!fileObj || !fileObj.type.startsWith("image/")) {
-      ElMessage.error(`${fileObj.name} 不是有效的图片文件`);
-      return;
+  const files = Array.isArray(file) ? file : [file]
+  
+  files.forEach(f => {
+    const fileObj = f.raw
+    if (!fileObj || !fileObj.type.startsWith('image/')) {
+      ElMessage.error(`${fileObj.name} 不是有效的图片文件`)
+      return
     }
-
+    
     images.value.push({
+      id: Date.now() + Math.random(),
       file: fileObj,
       originalPreview: URL.createObjectURL(fileObj),
-      processedPreview: "",
-      processing: false,
-    });
-  });
-};
+      processedPreview: ''
+    })
+  })
+}
 
-// 处理单张图片（单图模式）
+// 处理所有图片
 const processSingleImage = async () => {
-  if (!singleImage.value || processing.value) return;
-
-  processing.value = true;
+  if (!singleImage.value || processing.value) return
+  
+  processing.value = true
   try {
-    await processImage(singleImage.value);
-    ElMessage.success("转换完成");
+    await processImage(singleImage.value)
+    ElMessage.success('转换完成')
   } catch (error) {
-    ElMessage.error("处理失败，请重试");
-    console.error(error);
+    ElMessage.error('处理失败，请重试')
+    console.error(error)
   } finally {
-    processing.value = false;
+    processing.value = false
   }
-};
+}
 
-// 处理批量模式中的单张图片
-const processSingleImageInBatch = async (image) => {
-  if (image.processing || image.processedPreview) return;
-
-  image.processing = true;
-  try {
-    await processImage(image);
-    ElMessage.success("转换完成");
-  } catch (error) {
-    ElMessage.error("处理失败，请重试");
-    console.error(error);
-  } finally {
-    image.processing = false;
-  }
-};
-
-// 重置单图状态
-const resetSingleImage = () => {
-  if (singleImage.value) {
-    URL.revokeObjectURL(singleImage.value.originalPreview);
-  }
-  singleImage.value = null;
-};
+// 处理单张图片的通用函数
+const processImage = (image) => {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+    
+    img.onload = () => {
+      canvas.width = img.width
+      canvas.height = img.height
+      ctx.drawImage(img, 0, 0)
+      
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      
+      // 创建一个可传输的对象
+      const transferableImageData = {
+        data: imageData.data.buffer, // 使用 ArrayBuffer
+        width: imageData.width,
+        height: imageData.height
+      }
+      
+      worker.postMessage({
+        imageData: transferableImageData,
+        settings: {
+          algorithm: settings.value.algorithm,
+          hueRange: settings.value.hueRange,
+          saturationRange: settings.value.saturationRange,
+          lightnessRange: settings.value.lightnessRange
+        },
+        id: image.id
+      }, [transferableImageData.data]) // 将 buffer 作为 transferable 对象传递
+    }
+    
+    img.onerror = reject
+    img.src = image.originalPreview
+  })
+}
 
 // 下载单张处理后的图片
 const downloadSingleImage = () => {
-  if (!singleImage.value?.processedPreview) return;
+  if (!singleImage.value?.processedPreview) return
+  
+  const link = document.createElement('a')
+  const fileName = singleImage.value.file.name.split('.')[0]
+  link.download = `${fileName}_random_color.png`
+  link.href = singleImage.value.processedPreview
+  link.click()
+}
 
-  const link = document.createElement("a");
-  const fileName = singleImage.value.file.name.split(".")[0];
-  link.download = `${fileName}_grayscale.png`;
-  link.href = singleImage.value.processedPreview;
-  link.click();
-};
-
-// 处理文件上传
-const handleFileChange = (file) => {
-  const files = Array.isArray(file) ? file : [file];
-
-  files.forEach((f) => {
-    const fileObj = f.raw;
-    if (!fileObj || !fileObj.type.startsWith("image/")) {
-      ElMessage.error(`${fileObj.name} 不是有效的图片文件`);
-      return;
-    }
-
-    images.value.push({
-      file: fileObj,
-      originalPreview: URL.createObjectURL(fileObj),
-      processedPreview: "",
-    });
-  });
-};
-
-// 批量处理图片
-const processAllImages = async () => {
-  if (!images.value.length || batchProcessing.value) return;
-
-  batchProcessing.value = true;
-
-  try {
-    const unprocessedImages = images.value.filter(
-      (img) => !img.processedPreview
-    );
-    for (const image of unprocessedImages) {
-      image.processing = true;
-      await processImage(image);
-      image.processing = false;
-    }
-    ElMessage.success("所有图片处理完成");
-  } catch (error) {
-    ElMessage.error("处理过程中出现错误");
-    console.error(error);
-  } finally {
-    batchProcessing.value = false;
-  }
-};
-
-// 处理单张图片
-const processImage = (image) => {
-  return new Promise((resolve, reject) => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const img = new Image();
-
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      worker.onmessage = (e) => {
-        const resultCanvas = document.createElement("canvas");
-        const resultCtx = resultCanvas.getContext("2d");
-
-        resultCanvas.width = e.data.width;
-        resultCanvas.height = e.data.height;
-        resultCtx.putImageData(e.data, 0, 0);
-
-        image.processedPreview = resultCanvas.toDataURL("image/png");
-        resolve();
-      };
-
-      worker.postMessage({
-        imageData,
-        algorithm: settings.value.algorithm,
-        brightness: settings.value.brightness,
-        contrast: settings.value.contrast,
-      });
-    };
-
-    img.onerror = reject;
-    img.src = image.originalPreview;
-  });
-};
-
-// 打包下载所有处理后的图片
+// 下载所有处理后的图片
 const downloadAllImages = async () => {
   try {
-    const JSZip = (await import("jszip")).default;
-    const zip = new JSZip();
-
+    const JSZip = (await import('jszip')).default
+    const zip = new JSZip()
+    
     images.value.forEach((image, index) => {
       if (image.processedPreview) {
-        const base64Data = image.processedPreview.split(",")[1];
-        const fileName = `${image.file.name.split(".")[0]}_grayscale.png`;
-        zip.file(fileName, base64Data, { base64: true });
+        const base64Data = image.processedPreview.split(',')[1]
+        const fileName = `${image.file.name.split('.')[0]}_random_color.png`
+        zip.file(fileName, base64Data, { base64: true })
       }
-    });
-
-    const content = await zip.generateAsync({ type: "blob" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(content);
-    link.download = "grayscale_images.zip";
-    link.click();
-
-    ElMessage.success("打包下载开始");
+    })
+    
+    const content = await zip.generateAsync({ type: 'blob' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(content)
+    link.download = 'random_color_images.zip'
+    link.click()
+    
+    ElMessage.success('打包下载开始')
   } catch (error) {
-    ElMessage.error("下载失败");
-    console.error(error);
+    ElMessage.error('下载失败')
+    console.error(error)
   }
-};
+}
 
-// 重置状态
+// 重置单张状态
+const resetSingleImage = () => {
+  if (singleImage.value) {
+    URL.revokeObjectURL(singleImage.value.originalPreview)
+  }
+  singleImage.value = null
+}
+
+// 重置所有状态
 const resetImages = () => {
-  images.value.forEach((image) => {
-    URL.revokeObjectURL(image.originalPreview);
-  });
-  images.value = [];
-  settings.value = {
-    algorithm: "weighted",
-    brightness: 0,
-    contrast: 0,
-  };
-};
+  images.value.forEach(image => {
+    URL.revokeObjectURL(image.originalPreview)
+  })
+  images.value = []
+}
 
-// 添加对设置变化的监听，自动重新处理图片
+// 监听设置变化，自动重新处理图片
 watch(
   () => settings.value,
   () => {
-    if (images.value.length && hasProcessedImages.value) {
-      processAllImages();
+    if (activeTab.value === 'single' && singleImage.value?.processedPreview) {
+      processSingleImage()
+    } else if (activeTab.value === 'batch' && hasProcessedImages.value) {
+      processAllImages()
     }
   },
   { deep: true }
-);
+)
 </script>
 
 <style scoped>
@@ -657,7 +594,6 @@ watch(
   border-bottom: none;
 }
 
-/* 新增样式 */
 .image-tabs {
   margin-bottom: 2rem;
 }

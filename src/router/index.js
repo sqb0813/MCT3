@@ -33,6 +33,16 @@ const routes = [
         path: 'blackOrWhite',
         name: 'ImageBlackOrWhite',
         component: () => import('@/views/image/BlackOrWhite.vue')
+      },
+      {
+        path: 'textCard',
+        name: 'ImageTextCard',
+        component: () => import('@/views/image/TextCard.vue')
+      },
+      {
+        path: 'randomColor',
+        name: 'ImageRandomColor',
+        component: () => import('@/views/image/RandomColor.vue')
       }
     ]
   },
