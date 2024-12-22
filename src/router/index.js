@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import ModuleLayout from '@/layouts/ModuleLayout.vue'
 import AiLoveLayout from '@/layouts/AiLoveLayout.vue'
+import SpiderLayout from '@/layouts/SpiderLayout.vue'
 
 const routes = [
   {
@@ -46,6 +47,18 @@ const routes = [
       }
     ]
   },
+  // 爬虫模块
+  {
+    path: '/spider',
+    component: SpiderLayout,
+    children: [
+      {
+        path: 'youtube',
+        name: 'SpiderYoutube',
+        component: () => import('@/views/spider/YoutubeSpider.vue')
+      }
+    ]
+  },
   // AI恋爱系统模块 
   {
     path: '/ai-love',
@@ -66,11 +79,11 @@ const routes = [
         name: 'AiLoveHistory', 
         component: () => import('@/views/ai-love/history.vue')
       },
-      {
-        path: 'result',
-        name: 'AiLoveResult',
-        component: () => import('@/views/ai-love/result.vue')
-      },
+      // {
+      //   path: 'result',
+      //   name: 'AiLoveResult',
+      //   component: () => import('@/views/ai-love/result.vue')
+      // },
       {
         path: 'login',
         name: 'AiLoveLogin',
