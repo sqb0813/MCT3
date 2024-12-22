@@ -23,7 +23,7 @@ const routes = [
       {
         path: 'compress',
         name: 'ImageCompress', 
-        component: () => import('@/views/image/ImageCompress.vue')
+        component: () => import('@/views/image/Compress.vue')
       },
       {
         path: 'convert',
